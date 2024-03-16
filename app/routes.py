@@ -63,6 +63,7 @@ def generate_preview(parameters):
         else:   
             return 0
 
+#positive test link http://127.0.0.1:5000/image.png?image_size=2222&box_dimension_X=150&box_dimension_Y=100&box_dimension_Z=150
 @app.route('/image.png')
 def image():
     parameters = {
