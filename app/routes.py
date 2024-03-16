@@ -2,6 +2,7 @@ from app import app
 from flask import send_file, request
 import subprocess
 import os.path
+import hashlib
 
 
 @app.route('/')
@@ -46,7 +47,9 @@ def parameters_validation(parameters):
 
 def parameters_to_file_name(parameters):
     #TODO: add real parameter parsing
-    file_name = 'box_rounded_' + parameters["image_size"] + "bdx" + parameters["box_dimension_X"] + "bdy" + parameters["box_dimension_Y"] +"bdz" + parameters["box_dimension_Z"] + '.png'
+    hash_object = hashlib.md5(str(parameters).encode())
+    #file_name = 'box_rounded_' + parameters["image_size"] + "bdx" + parameters["box_dimension_X"] + "bdy" + parameters["box_dimension_Y"] +"bdz" + parameters["box_dimension_Z"] + '.png'
+    file_name = 'box_rounded_' + hash_object.hexdigest() + '.png'
     return file_name
 
 def create_cache_filename(file):
