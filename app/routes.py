@@ -53,15 +53,14 @@ def parameters_validation(parameters):
 def parameters_to_file_name(parameters):
     #TODO: add real parameter parsing
     hash_object = hashlib.md5(str(parameters).encode())
-    #file_name = 'box_rounded_' + parameters["image_size"] + "bdx" + parameters["box_dimension_X"] + "bdy" + parameters["box_dimension_Y"] +"bdz" + parameters["box_dimension_Z"] + '.png'
     file_name = 'box_rounded_' + hash_object.hexdigest() + '.png'
     return file_name
 
-def create_cache_filename(file):
+def create_cache_path(file):
     return os.path.join(app.root_path,'..', 'cache', file)
 
 def check_cache(file):
-    cache_file = create_cache_filename(file)
+    cache_file = create_cache_path(file)
     if os.path.isfile(cache_file):
         return 1
     else:
@@ -69,10 +68,11 @@ def check_cache(file):
 
 def generate_preview(parameters):
     file_name = parameters_to_file_name(parameters)
-    cache_file = create_cache_filename(file_name)
+    cache_file = create_cache_path(file_name)
     if (check_cache(file_name)):
         return cache_file
     else:
+        #TODO: add proper validation against escaping strings, don't rely on int conversion in parameter validation
         openscad_file = os.path.join(app.root_path,'..', 'openscad', 'box_rounded.scad')
         return_code = subprocess.call(["openscad",
                                        "-o",
