@@ -11,11 +11,24 @@ def parameters_validation(parameters):
         print("image_size parameter error");
         return 0
     
+    box_dimension_X = int(parameters["box_dimension_X"])
+    box_dimension_Y = int(parameters["box_dimension_Y"])
+    box_dimension_Z = int(parameters["box_dimension_Z"])
+
+    if box_dimension_X < 30 or box_dimension_X > 250:
+        print("box_dimesnion_X error")
+        return 0
+    if box_dimension_Y < 30 or box_dimension_Y > 250:
+        print("box_dimesnion_Y error")
+        return 0
+    if box_dimension_Z < 30 or box_dimension_X > 280:
+        print("box_dimesnion_Z error")
+        return 0
     return 1
 
 def parameters_to_file_name(parameters):
     #TODO: add real parameter parsing
-    file_name = 'box_rounded_' + parameters["image_size"] +'.png'
+    file_name = 'box_rounded_' + parameters["image_size"] + "bdx" + parameters["box_dimension_X"] + "bdy" + parameters["box_dimension_Y"] +"bdz" + parameters["box_dimension_Z"] + '.png'
     return file_name
 
 def create_cache_filename(file):
@@ -39,6 +52,9 @@ def generate_preview(parameters):
                                        "-o",
                                        cache_file, 
                                        "--imgsize=" + parameters["image_size"] + "," + parameters["image_size"],
+                                       "-D", "box_dimension_X=" + parameters["box_dimension_X"] + "",  
+                                       "-D", "box_dimension_Y=" + parameters["box_dimension_Y"] + "",
+                                       "-D", "box_dimension_Z=" + parameters["box_dimension_Z"] + "",
                                        "--colorscheme", 
                                        "DeepOcean", 
                                        openscad_file])
@@ -51,6 +67,9 @@ def generate_preview(parameters):
 def image():
     parameters = {
         "image_size": request.args["image_size"],
+        "box_dimension_X": request.args["box_dimension_X"],
+        "box_dimension_Y": request.args["box_dimension_Y"],
+        "box_dimension_Z": request.args["box_dimension_Z"],
     }
 
     if parameters_validation(parameters) == 0:
