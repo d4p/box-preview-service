@@ -1,0 +1,1 @@
+FLASK_APP=preview_generator.py
