@@ -8,7 +8,8 @@ import os.path
 def index():
     #openscad -o test.png --imgsize=4096,4096  --colorscheme DeepOcean box_rounded.scad
     openscad_file = os.path.join(app.root_path,'..', 'openscad', 'box_rounded.scad')
-    status = subprocess.run(["openscad","-o","output.png", "--imgsize=1024,1024", "--colorscheme", "DeepOcean", openscad_file], capture_output=True, text=True)
+    cache_file = os.path.join(app.root_path,'..', 'cache', 'box_rounded.png')
+    status = subprocess.run(["openscad","-o",cache_file, "--imgsize=1024,1024", "--colorscheme", "DeepOcean", openscad_file], capture_output=True, text=True)
     return 'Hello, World!' + status.stdout + status.stderr
 
 @app.route('/get_preview')
