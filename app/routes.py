@@ -3,6 +3,7 @@ from flask import send_file, request
 import subprocess
 import os.path
 
+
 @app.route('/')
 
 def parameters_validation(parameters):
@@ -24,6 +25,23 @@ def parameters_validation(parameters):
     if box_dimension_Z < 30 or box_dimension_X > 280:
         print("box_dimesnion_Z error")
         return 0
+    
+    wall_thickness = int(parameters["wall_thickness"])
+
+    if wall_thickness < 1 or wall_thickness > 5:
+        print("whall thicnkess error")
+        return 0
+
+    bottom_thickness = int(parameters["bottom_thickness"])
+    if bottom_thickness < 2 or bottom_thickness > 10 or bottom_thickness > box_dimension_Z:
+        print("bottom_thickness error")
+        return 0
+    
+    round_radius = int(parameters["round_radius"])
+    if round_radius < 0 or round_radius > (box_dimension_X/2) or round_radius > (box_dimension_Y/2):
+        print("round_radius_error")
+        return 0
+
     return 1
 
 def parameters_to_file_name(parameters):
@@ -55,6 +73,9 @@ def generate_preview(parameters):
                                        "-D", "box_dimension_X=" + parameters["box_dimension_X"] + "",  
                                        "-D", "box_dimension_Y=" + parameters["box_dimension_Y"] + "",
                                        "-D", "box_dimension_Z=" + parameters["box_dimension_Z"] + "",
+                                       "-D", "wall_thickness=" + parameters["wall_thickness"] + "",
+                                       "-D", "bottom_thickness=" + parameters["bottom_thickness"] + "",
+                                       "-D", "round_radius=" + parameters["round_radius"] + "",
                                        "--colorscheme", 
                                        "DeepOcean", 
                                        openscad_file])
@@ -63,7 +84,6 @@ def generate_preview(parameters):
         else:   
             return 0
 
-#positive test link http://127.0.0.1:5000/image.png?image_size=2222&box_dimension_X=150&box_dimension_Y=100&box_dimension_Z=150
 @app.route('/image.png')
 def image():
     parameters = {
@@ -71,6 +91,9 @@ def image():
         "box_dimension_X": request.args["box_dimension_X"],
         "box_dimension_Y": request.args["box_dimension_Y"],
         "box_dimension_Z": request.args["box_dimension_Z"],
+        "wall_thickness": request.args["wall_thickness"],
+        "bottom_thickness": request.args["bottom_thickness"],
+        "round_radius": request.args["round_radius"]
     }
 
     if parameters_validation(parameters) == 0:
