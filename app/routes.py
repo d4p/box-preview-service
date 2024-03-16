@@ -4,17 +4,7 @@ import subprocess
 import os.path
 
 @app.route('/')
-@app.route('/index.html')
-def index():
-    #openscad -o test.png --imgsize=4096,4096  --colorscheme DeepOcean box_rounded.scad
-    openscad_file = os.path.join(app.root_path,'..', 'openscad', 'box_rounded.scad')
-    cache_file = os.path.join(app.root_path,'..', 'cache', 'box_rounded.png')
-    return_code = subprocess.call(["openscad","-o",cache_file, "--imgsize=1024,1024", "--colorscheme", "DeepOcean", openscad_file])
-    if return_code == 0:
-        return 'Generated image'
-    else:
-        return 'Hello, World!' + str(return_code)
-    
+
 def parameters_validation(parameters):
     #allow only images between 100x100 and 4096x4096
     if int(parameters["image_size"]) > 4096 or int(parameters["image_size"]) < 100:
@@ -56,16 +46,6 @@ def generate_preview(parameters):
             return cache_file
         else:   
             return 0
-
-@app.route('/get_preview')
-def get_preview():
-    if request.args.get('type') == '1':
-        filename = 'sample_file.png'
-        imagetype = 'image/png'
-    else:
-        filename = '../resources/error.jpg'
-        imagetype = 'image/jpg'
-    return send_file(filename, mimetype=imagetype)
 
 @app.route('/image.png')
 def image():
