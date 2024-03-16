@@ -42,6 +42,11 @@ def parameters_validation(parameters):
     if round_radius < 0 or round_radius > (box_dimension_X/2) or round_radius > (box_dimension_Y/2):
         print("round_radius_error")
         return 0
+    
+    hole_diameter = int(parameters["hole_diameter"])
+    if hole_diameter < 0 or hole_diameter > (box_dimension_X - 2*round_radius):
+        print("hole_diameter error")
+        return 0
 
     return 1
 
@@ -79,6 +84,7 @@ def generate_preview(parameters):
                                        "-D", "wall_thickness=" + parameters["wall_thickness"] + "",
                                        "-D", "bottom_thickness=" + parameters["bottom_thickness"] + "",
                                        "-D", "round_radius=" + parameters["round_radius"] + "",
+                                       "-D", "hole_diameter=" + parameters["hole_diameter"] + "",
                                        "--colorscheme", 
                                        "DeepOcean", 
                                        openscad_file])
@@ -96,7 +102,8 @@ def image():
         "box_dimension_Z": request.args["box_dimension_Z"],
         "wall_thickness": request.args["wall_thickness"],
         "bottom_thickness": request.args["bottom_thickness"],
-        "round_radius": request.args["round_radius"]
+        "round_radius": request.args["round_radius"],
+        "hole_diameter": request.args["hole_diameter"]
     }
 
     if parameters_validation(parameters) == 0:
