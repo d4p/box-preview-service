@@ -10,8 +10,8 @@ round_radius = 20;
 hole_diameter =41; //diameter of the hole
 hole_x= 0.5 * box_dimension_X; //allow hole to be only in the center
 hole_y = 0;
-//hole_z = 0.5 *box_dimension_Z; //height of the center of the hole
-hole_z = 130;
+//hole_Z = 0.5 *box_dimension_Z; //height of the center of the hole
+hole_Z = 130;
 rounded = false;
 buffer = 0.02;
 
@@ -68,7 +68,7 @@ difference(){
     translate([wall_thickness,wall_thickness,bottom_thickness])
             rounded_box2(box_dimension_X-wall_thickness,box_dimension_Y-wall_thickness,box_dimension_Z,round_radius-wall_thickness);
     
-   translate([hole_x , hole_y + wall_thickness + buffer, hole_z])
+   translate([hole_x , hole_y + wall_thickness + buffer, hole_Z])
         rotate([90,0,0])
             cylinder(h=wall_thickness + 2*buffer, d= hole_diameter); 
 }

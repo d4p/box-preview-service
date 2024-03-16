@@ -47,6 +47,11 @@ def parameters_validation(parameters):
     if hole_diameter < 0 or hole_diameter > (box_dimension_X - 2*round_radius):
         print("hole_diameter error")
         return 0
+    
+    hole_Z = int(parameters["hole_Z"])
+    if (hole_Z - hole_diameter/2) < bottom_thickness or (hole_Z + hole_diameter/2) > box_dimension_Z:
+        print("hole_Z error")
+        return 0
 
     return 1
 
@@ -60,6 +65,7 @@ def create_cache_path(file):
     return os.path.join(app.root_path,'..', 'cache', file)
 
 def check_cache(file):
+    #TODO: add max cache size control
     cache_file = create_cache_path(file)
     if os.path.isfile(cache_file):
         return 1
@@ -85,6 +91,7 @@ def generate_preview(parameters):
                                        "-D", "bottom_thickness=" + parameters["bottom_thickness"] + "",
                                        "-D", "round_radius=" + parameters["round_radius"] + "",
                                        "-D", "hole_diameter=" + parameters["hole_diameter"] + "",
+                                       "-D", "hole_Z=" + parameters["hole_Z"] + "",
                                        "--colorscheme", 
                                        "DeepOcean", 
                                        openscad_file])
@@ -103,7 +110,8 @@ def image():
         "wall_thickness": request.args["wall_thickness"],
         "bottom_thickness": request.args["bottom_thickness"],
         "round_radius": request.args["round_radius"],
-        "hole_diameter": request.args["hole_diameter"]
+        "hole_diameter": request.args["hole_diameter"],
+        "hole_Z": request.args["hole_Z"]
     }
 
     if parameters_validation(parameters) == 0:
