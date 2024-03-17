@@ -52,6 +52,12 @@ def parameters_validation(parameters):
     if (hole_Z - hole_diameter/2) < bottom_thickness or (hole_Z + hole_diameter/2) > box_dimension_Z:
         print("hole_Z error")
         return 0
+    
+    allowed_colors = {"bw", "bb", "DeepOcean"}
+    color = parameters["color"]
+    #BE CAREFULL WITH THIS VALIDATION! THIS STRING IS PASSED DIRECTLY TO COMMAND LINE LATER! THIS IS THE ONLY LINE OF DEFENCE ESCAPE ATTACKS MIGHT BE POSSIBLE IF MODIFIED
+    if color not in allowed_colors:
+        return 0
 
     return 1
 
@@ -92,8 +98,7 @@ def generate_preview(parameters):
                                        "-D", "round_radius=" + parameters["round_radius"] + "",
                                        "-D", "hole_diameter=" + parameters["hole_diameter"] + "",
                                        "-D", "hole_Z=" + parameters["hole_Z"] + "",
-                                       "--colorscheme", 
-                                       "DeepOcean", 
+                                       "--colorscheme", parameters["color"], 
                                        openscad_file])
         if return_code == 0:
             return cache_file
@@ -111,7 +116,8 @@ def image():
         "bottom_thickness": request.args["bottom_thickness"],
         "round_radius": request.args["round_radius"],
         "hole_diameter": request.args["hole_diameter"],
-        "hole_Z": request.args["hole_Z"]
+        "hole_Z": request.args["hole_Z"],
+        "color": request.args["color"]
     }
 
     if parameters_validation(parameters) == 0:

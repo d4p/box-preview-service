@@ -14,6 +14,9 @@ COPY . .
 #RUN apt-get install -y < requirements_ubuntu.txt
 RUN xargs apt-get install -y < requirements_ubuntu.txt
 
+COPY ./openscad/box_black.json /usr/share/openscad/color-schemes/render/
+COPY ./openscad/box_white.json /usr/share/openscad/color-schemes/render/
+
 #install python dependencies
 RUN pip install --no-cache-dir -r requirements_python.txt
 
@@ -21,3 +24,5 @@ EXPOSE 5000
 
 #TODO run production server instead fo flask
 CMD ["flask", "run"]
+
+#TODO add two stage docker to save time on image building
