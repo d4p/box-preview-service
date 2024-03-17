@@ -20,9 +20,10 @@ COPY ./openscad/box_white.json /usr/share/openscad/color-schemes/render/
 #install python dependencies
 RUN pip install --no-cache-dir -r requirements_python.txt
 
-EXPOSE 5000
+EXPOSE 5001
 
-#TODO run production server instead fo flask
-CMD ["flask", "run"]
+#CMD ["flask", "run"]
+#CMD ["gunicorn", "--bind", "0.0.0.0:5000", "app:app"]
+CMD ["./run_production.sh"]
 
 #TODO add two stage docker to save time on image building

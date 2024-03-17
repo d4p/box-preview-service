@@ -10,8 +10,8 @@ flask run
 sudo docker build --tag "preview_generator" .
 
 #Docker run locally
-docker run -p 5000:5000 --network="host" preview_generator
+docker run --network="host" preview_generator
 
 
-#make docekr-clean;)
+#make docker-clean;)
 docker system prune -f
