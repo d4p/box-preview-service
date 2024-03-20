@@ -1,4 +1,6 @@
 #!/bin/bash
+#This script is called by docker. Runs the script that 
+#starts the virtual framebuffer (required for openscad rendering) and runs the web app
 
 ./virtualfb.sh
 export DISPLAY=:128
