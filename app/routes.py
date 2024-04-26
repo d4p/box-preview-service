@@ -105,6 +105,35 @@ def generate_preview(parameters):
         else:   
             return 0
 
+def generate_model(parameters):
+    file_name = parameters_to_file_name(parameters)
+    file_name = file_name.replace(".png", ".stl")
+    cache_file = create_cache_path(file_name)
+    if (check_cache(file_name)):
+        return cache_file
+    else:
+        #TODO: add proper validation against escaping strings, don't rely on int conversion in parameter validation
+        openscad_file = os.path.join(app.root_path,'..', 'openscad', 'box_rounded.scad')
+        #using too many parameters just not to modify the strings when testing;) to be fixed later 
+        return_code = subprocess.call(["openscad",
+                                       "-o",
+                                       cache_file, 
+                                       "--imgsize=" + parameters["image_size"] + "," + parameters["image_size"],
+                                       "-D", "box_dimension_X=" + parameters["box_dimension_X"] + "",  
+                                       "-D", "box_dimension_Y=" + parameters["box_dimension_Y"] + "",
+                                       "-D", "box_dimension_Z=" + parameters["box_dimension_Z"] + "",
+                                       "-D", "wall_thickness=" + parameters["wall_thickness"] + "",
+                                       "-D", "bottom_thickness=" + parameters["bottom_thickness"] + "",
+                                       "-D", "round_radius=" + parameters["round_radius"] + "",
+                                       "-D", "hole_diameter=" + parameters["hole_diameter"] + "",
+                                       "-D", "hole_Z=" + parameters["hole_Z"] + "",
+                                       "--colorscheme", parameters["color"], 
+                                       openscad_file])
+        if return_code == 0:
+            return cache_file
+        else:   
+            return 0        
+
 @app.route('/image.png')
 def image():
     parameters = {
@@ -128,3 +157,29 @@ def image():
         imagetype = 'image/png'
             
     return send_file(filename, mimetype=imagetype)
+
+
+@app.route('/box.stl')
+def model():
+    #using too many parameters just not to modify the strings when testing;) to be fixed later
+    parameters = {
+        "image_size": request.args["image_size"],
+        "box_dimension_X": request.args["box_dimension_X"],
+        "box_dimension_Y": request.args["box_dimension_Y"],
+        "box_dimension_Z": request.args["box_dimension_Z"],
+        "wall_thickness": request.args["wall_thickness"],
+        "bottom_thickness": request.args["bottom_thickness"],
+        "round_radius": request.args["round_radius"],
+        "hole_diameter": request.args["hole_diameter"],
+        "hole_Z": request.args["hole_Z"],
+        "color": request.args["color"]
+    }
+
+    if parameters_validation(parameters) == 0:
+        filename = '../resources/error.jpg'
+        imagetype = 'image/jpg'
+    else:
+        filename = generate_model(parameters)
+        filetype = 'model/stl'
+            
+    return send_file(filename, mimetype=filetype)
