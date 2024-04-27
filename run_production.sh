@@ -4,4 +4,8 @@
 
 ./virtualfb.sh
 export DISPLAY=:128
-gunicorn --bind 0.0.0.0:5000 app:app
+
+#dirty hack for cache, it will fail if the folder already exist
+mkdir cache
+
+gunicorn --log-file ./log.log -t 300 --threads 2 --bind 0.0.0.0:5000 app:app
